@@ -7,19 +7,21 @@ useStatements
 	:	'using' (dirname FSLASH)* (dirname|ASTERISK) SEMI;
 
 protoDecs
-	: 	(modifiers)* 'prototype' protoName protoBody
+	: 	(modifiers)* 'prototype' validName protoBody
 	;
-	
-protoName
-	: 	validName
-	;
+
 protoBody
 	: 	BEGIN (methodDecs | fieldDecs)* END
 	;
+// list of modifiers is not optional is it?
+fieldDecs
+	: 	modifiers datatype
+	;
 
 methodDecs
-	: 	(modifiers)* yieldtype validName formalList BEGIN statementList END
+	: 	modifiers yieldtype validName formalList BEGIN statementList END
 	;
+	
 statementList
 	:	(statement)*;
 statement
@@ -71,13 +73,9 @@ main_expr
  	| 	constant 
   	| 	(LBRACKET expr RBRACKET )
   	;
-  
-fieldDecs
-	: 	(modifiers)* datatype
-	; 
 
 formalList
-	: 	LBRACKET (formal COMMA)* datatype validName RBRACKET
+	: 	LBRACKET (formal COMMA)* RBRACKET
 	;
 formal	:	datatype validName;
 
@@ -96,10 +94,10 @@ dirname
 	;
 
 validName
-	: 	(CHAR ( CHAR | NUMBER )*) ;
+	: 	CHAR ( CHAR | NUMBER )*;
 	
 constant:	NUMBER+'.'NUMBER+
-	|	NUMBER+'.'?(NUMBER)*'E'('-'|'+')?NUMBER+
+	|	NUMBER+('.'(NUMBER)*)?'E'('-'|'+')?NUMBER+
 	|	NUMBER+
 	|	(TRUE|FALSE)
 	|	STRING_LITERAL
