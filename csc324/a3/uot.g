@@ -15,13 +15,16 @@ protoBody
 	;
 // list of modifiers is not optional is it?
 fieldDecs
-	: 	modifiers datatype
+	: 	(modifiers)+ datatype
 	;
 
 methodDecs
-	: 	modifiers yieldtype validName formalList BEGIN statementList END
+	: 	(modifiers)+ yieldtype validName formalList (SEMI | BEGIN statementList END)
 	;
 	
+modifiers
+	: 	('visible' | 'shielded' | 'onlyone' | 'constant' | 'hidden')
+	;
 statementList
 	:	(statement)*;
 statement
@@ -78,10 +81,7 @@ formalList
 	: 	LBRACKET (formal COMMA)* RBRACKET
 	;
 formal	:	datatype validName;
-
-modifiers
-	: 	('visible' | 'shielded' | 'onlyone' | 'constant' | 'hidden')
-	;	
+	
 datatype
 	: 	('integer' | 'bool' | 'char' | 'double')
 	;
