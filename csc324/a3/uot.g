@@ -13,14 +13,19 @@ protoDecs
 protoBody
 	: 	BEGIN (methodDecs | fieldDecs)* END
 	;
-// list of modifiers is not optional is it?
+
 fieldDecs
-	: 	(modifiers)+ datatype
+	: 	(modifiers)+ datatype validName ASSIGN expr SEMI
 	;
 
 methodDecs
 	: 	(modifiers)+ yieldtype validName formalList (SEMI | BEGIN statementList END)
 	;
+	
+formalList
+	: 	LBRACKET ((formal COMMA)* formal)? RBRACKET
+	;
+formal	:	datatype validName;
 	
 modifiers
 	: 	('visible' | 'shielded' | 'onlyone' | 'constant' | 'hidden')
@@ -74,13 +79,13 @@ or_expr
 main_expr
  	: 	validName 
  	| 	constant 
-  	| 	(LBRACKET expr RBRACKET )
+ 	|	functionCall
+  	| 	(LBRACKET expr RBRACKET)
   	;
 
-formalList
-	: 	LBRACKET (formal COMMA)* RBRACKET
+functionCall
+	:	validName LBRACKET (main_expr (COMMA main_expr)* )? RBRACKET
 	;
-formal	:	datatype validName;
 	
 datatype
 	: 	('integer' | 'bool' | 'char' | 'double')
