@@ -128,3 +128,8 @@ CHAR	:
 		( 'A'..'Z' | 'a'..'z' );
 STRING_LITERAL
 	:	'\"'~('\"')*'\"';
+// python-style comments
+COMMENT
+    :   '#' ~( '\r'|'\n' )*  ( '\r\n' | '\n' | '\r' ) { skip(); }
+    |   '#' ~( '\r'|'\n' )* { skip(); }
+    ;
