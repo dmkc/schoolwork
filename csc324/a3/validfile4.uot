@@ -1,0 +1,31 @@
+shielded constant hidden visible prototype something
+begin
+    # a method with an empty body
+    constant shielded visible char something <- 3.33E-33;
+
+    nothing something(integer x, integer x)
+    begin
+        yield other3things;
+    end
+
+    visible onlyone nothing something(integer x, double y, char z, bool t)
+    begin
+        x <- 3;
+        when ((x is 3) and (y isnot 4))
+        begin
+            y <- 5;
+        orwhen ((x is 3) and (y isnot 4))
+            z <- 6;
+            bool y <- 3;
+        orwhen (((x is (3 and y)) isnot 4))
+            yield (((x is 3) and y) isnot 4);
+        otherwise
+            when (9.99E+99 lessorequal false)
+            begin
+                (x + y) * (z + t) and (-6.66E66);
+            end
+        end
+        yield x;
+    end
+    constant onlyone constant integer y <- 4;
+end

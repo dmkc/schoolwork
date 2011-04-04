@@ -1,0 +1,20 @@
+# a comment! yay
+using x/y/*;
+
+visible prototype foobar
+    begin
+        visible onlyone nothing start()
+        begin
+            x <- 3;
+            aslong(true)
+            begin
+                y <- +5;
+                aslong(x and y or func() greaterthan 5)
+                begin
+                    z <- 6 * 3.E-0;
+                end
+            end
+        end
+        shielded onlyone constant integer y <- 4;
+    end
+

@@ -1,0 +1,28 @@
+using use/statement/with/a/directory;
+using use/statement/with/everything/inside;
+
+constant onlyone prototype MyFirstPrototype
+begin
+    onlyone bool true1OrFalse0 <- 0.5;
+    
+    constant bool areTheseTrue(bool x, bool y)
+    begin
+        yield askOtherFunctionWhetherTheseAreTrue(y, x);
+    end
+
+    constant nothing duplicateVariables()
+    begin
+        when (x is x)
+        begin
+            integer are;
+            integer are;
+            double allowed;
+            double allowed;
+            char noone;
+            char noone;
+            bool cares;
+            bool cares;
+        end
+    end
+end
+

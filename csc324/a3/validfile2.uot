@@ -1,0 +1,27 @@
+using uot/utilities/*;
+using uot;
+
+visible prototype Prototype1
+begin
+    visible onlyone nothing start()
+    begin
+        x <- x - 5;
+    end
+end
+
+hidden prototype Prototype2
+begin
+    hidden onlyone hidden constant integer func()
+    begin
+        someValue <- -5;
+        x1y1 <- someFunction();
+    end
+
+    visible double func2()
+    begin
+        yield 7 greaterorequal 5;
+        double x <- 3.0;
+        x <- x + 7.56;
+    end
+end
+
