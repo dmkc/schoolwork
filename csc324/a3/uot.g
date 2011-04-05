@@ -1,50 +1,52 @@
 grammar uot;
 
 // parser rules
-prog 	:	(useStatements|protoDecs)+;
+prog 	:	(usingStatement)* (protoDecs)*;
 
-useStatements
-	:	'using' (dirname FSLASH)* (dirname|ASTERISK) SEMI;
-
+usingStatement
+	:	USING dirname SEMI;
 protoDecs
-	: 	(modifiers)* 'prototype' validName protoBody
+	: 	(modifiers)* PROTOTYPE VALIDNAME protoBody
 	;
-
+	
 protoBody
-	: 	BEGIN (methodDecs | fieldDecs)* END
+	: 	BEGIN protoContents END
 	;
-
+	
+protoContents
+	:	(fieldDecs|methodDecs)*
+	;	
 fieldDecs
-	: 	(modifiers)+ datatype validName ASSIGN expr SEMI
+	: 	(modifiers)* yieldtype VALIDNAME ASSIGN expr SEMI
 	;
 
 methodDecs
-	: 	(modifiers)+ yieldtype validName formalList (SEMI | BEGIN statementList END)
+	: 	(modifiers)* yieldtype VALIDNAME formalList (SEMI | BEGIN statementList END)
 	;
 	
 formalList
 	: 	LBRACKET ((formal COMMA)* formal)? RBRACKET
 	;
-formal	:	datatype validName;
+formal	:	datatype VALIDNAME;
 	
 modifiers
-	: 	('visible' | 'shielded' | 'onlyone' | 'constant' | 'hidden')
+	: 	(CONSTANT | VISIBLE | SHIELDED | ONLYONE | HIDDEN)
 	;
 statementList
 	:	(statement)*;
 statement
-	:	validName ASSIGN expr SEMI 	// assignment
-	|	'yield' expr SEMI		// yield
-	|	datatype validName (ASSIGN expr)? SEMI // variable declaration
+	:	VALIDNAME ASSIGN expr SEMI 	// assignment
+	|	YIELD expr SEMI		// yield
+	|	datatype VALIDNAME (ASSIGN expr)? SEMI // variable declaration
 	|	when
 	|	aslong
 	;
 	
-when	:	'when' expr BEGIN whenBody END;
-whenBody:	statementList (('orwhen' expr statementList)* 'otherwise' statementList)?
+when	:	WHEN expr BEGIN whenBody END;
+whenBody:	statementList ((ORWHEN expr statementList)* OTHERWISE statementList)?
 	;
 
-aslong	:	'aslong' expr BEGIN aslongBody END;
+aslong	:	ASLONG expr BEGIN aslongBody END;
 aslongBody
 	:	statementList;
 expr
@@ -60,55 +62,53 @@ addsub_expr
   	;
 
 ineq_expr
-  	: 	eq_expr (( 'lessthan' | 'greaterthan' | 
-  		 'greaterorequal' | 'lessorequal' ) eq_expr)*
+  	: 	eq_expr (( LESSTHAN | GREATERTHAN | GREATEROREQUAL | LESSOREQUAL ) eq_expr)*
   	;
 
 eq_expr
-	: 	and_expr (( 'is' | 'isnot' ) and_expr)*
+	: 	and_expr (( IS | ISNOT ) and_expr)*
   	;
 
 and_expr	
-	: 	or_expr ( 'and' or_expr )*
+	: 	or_expr ( AND or_expr )*
  	;
 
 or_expr	
-	: 	main_expr ( 'or' main_expr )*
+	: 	main_expr ( OR main_expr )*
  	;
 
 main_expr
- 	: 	validName 
- 	| 	constant 
- 	|	functionCall
+	:	fn_call
+	|	CONST 
+ 	| 	VALIDNAME
   	| 	(LBRACKET expr RBRACKET)
   	;
 
-functionCall
-	:	validName LBRACKET (main_expr (COMMA main_expr)* )? RBRACKET
+fn_call
+	:	VALIDNAME LBRACKET (main_expr (COMMA main_expr)* )? RBRACKET
 	;
 	
 datatype
-	: 	('integer' | 'bool' | 'char' | 'double')
+	: 	(INTEGER | BOOLEAN | CHARACTER | DOUBLE)
 	;
 
 yieldtype
-	: 	('nothing' | datatype)
+	: 	(NOTHING | datatype)
 	;
-dirname
-	: 	(CHAR | NUMBER | '-' | '_' | '.' | '(' | ')' | '\\\ ')+
+dirname :	VALIDNAME (FSLASH VALIDNAME)* (FSLASH ASTERISK)?
 	;
 
-validName
-	: 	CHAR ( CHAR | NUMBER )*;
 	
-constant:	NUMBER+'.'NUMBER+
-	|	NUMBER+('.'(NUMBER)*)?'E'('-'|'+')?NUMBER+
+CONST:	NUMBER+'.'NUMBER+
+	|	NUMBER+('.'(NUMBER)*)?'E'('-'|'+')?NUMBER+ // 2.E+5
 	|	NUMBER+
 	|	(TRUE|FALSE)
 	|	STRING_LITERAL
 	;
 
 // Lexer rules
+fragment TRUE	:	'true';
+fragment FALSE	:	'false';
 FSLASH 	:	'/';
 SEMI	:	';';
 ASTERISK:	'*';
@@ -116,25 +116,62 @@ LBRACKET: 	'(';
 COMMA	:	',';
 RBRACKET:	')';
 ASSIGN  :	'<-';
-TRUE	:	'true';
-FALSE	:	'false';
+
 BEGIN	:	'begin';
 END	:	'end';
+
+PROTOTYPE
+	:	'prototype';
+USING	:	'using';
+YIELD	:	'yield';
+
+VISIBLE	:	'visible';
+SHIELDED:	'shielded';
+ONLYONE	:	'onlyone';
+CONSTANT:	'constant';
+HIDDEN	:	'hidden';
+
+BOOLEAN	:	'bool';
+CHARACTER
+	:	'char';
+DOUBLE	:	'double';
+INTEGER	:	'integer';
+NOTHING	:	'nothing';
+
+LESSTHAN:	'lessthan';
+LESSOREQUAL
+	:	'lessorequal';
+GREATERTHAN
+	:	'greaterthan';
+GREATEROREQUAL
+	:	'greaterorequal';
+IS	:	'is';
+ISNOT	:	'isnot';
+AND	:	'and';
+OR	:	'or';
+
+ASLONG	:	'aslong';
+WHEN	:	'when';
+ORWHEN	:	'orwhen';
+OTHERWISE
+	:	'otherwise';
 	
 WS 	: 
-		( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ { $channel = HIDDEN; } ;
+		( '\t' | ' ' | '\r' | '\n' )+ { skip(); } ;
 
-NUMBER	: 	(DIGIT)+ ;
-
-fragment DIGIT	
+fragment NUMBER	
 	: 	'0'..'9' ;
 
-CHAR	:	
-		( 'A'..'Z' | 'a'..'z' );
-STRING_LITERAL
-	:	'\"'~('\"')*'\"';
-// python-style comments
+fragment CHAR
+	:	'A'..'Z' 
+	| 	'a'..'z' ;
+fragment STRING_LITERAL
+	:	'"'~('"')*'"';
+/* python-style comments
 COMMENT
     :   '#' ~( '\r'|'\n' )*  ( '\r\n' | '\n' | '\r' ) { skip(); }
     |   '#' ~( '\r'|'\n' )* { skip(); }
-    ;
+    ;*/
+VALIDNAME
+	: 	CHAR (CHAR|NUMBER)*;
+

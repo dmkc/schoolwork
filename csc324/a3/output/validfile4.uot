@@ -1,6 +1,5 @@
 shielded constant hidden visible prototype something
 begin
-    # a method with an empty body
     constant shielded visible char something <- 3.33E-33;
 
     nothing something(integer x, integer x)
