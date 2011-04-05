@@ -1,4 +1,7 @@
 grammar uot;
+options {
+	backtrack=true;
+}
 
 // parser rules
 prog 	:	(usingStatement)* (protoDecs)*;
@@ -35,8 +38,7 @@ modifiers
 statementList
 	:	(statement)*;
 statement
-	:	VALIDNAME ASSIGN expr SEMI 	// assignment
-	|	YIELD expr SEMI		// yield
+	:	(VALIDNAME ASSIGN|YIELD)? expr SEMI 	// assignment
 	|	datatype VALIDNAME (ASSIGN expr)? SEMI // variable declaration
 	|	when
 	|	aslong
@@ -78,15 +80,11 @@ or_expr
  	;
 
 main_expr
-	:	fn_call
+	:	VALIDNAME LBRACKET (expr (COMMA expr)* )? RBRACKET
 	|	CONST 
  	| 	VALIDNAME
   	| 	(LBRACKET expr RBRACKET)
   	;
-
-fn_call
-	:	VALIDNAME LBRACKET (main_expr (COMMA main_expr)* )? RBRACKET
-	;
 	
 datatype
 	: 	(INTEGER | BOOLEAN | CHARACTER | DOUBLE)
