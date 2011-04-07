@@ -16,9 +16,9 @@ FindFilmStar(A):
         else
             j=j+1
 
-    # a star's colum is all 1s and its row is all 
+    # a star's column is all 1s and its row is all 
     # zeroes except for A[i][i]
-    while A[u][i]==1 and A[i][v]:
+    while u<=n and A[u][i]==1 and A[i][v]:
         u=u+1
         v=v+1
         # skip asking person about knowing themselves
