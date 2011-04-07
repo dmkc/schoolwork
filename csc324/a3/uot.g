@@ -16,7 +16,7 @@ protoContents
 	:	(fieldDecs|methodDecs)*
 	;	
 fieldDecs
-	: 	(modifiers)* yieldtype VALIDNAME ASSIGN expr SEMI
+	: 	(modifiers)* yieldtype VALIDNAME (ASSIGN expr)? SEMI
 	;
 
 methodDecs
@@ -34,7 +34,7 @@ modifiers
 statementList
 	:	(statement)*;
 statement
-	:	((VALIDNAME ASSIGN|YIELD)? expr SEMI) => (VALIDNAME ASSIGN|YIELD)? expr SEMI 	// assignment
+	:	(VALIDNAME ASSIGN|YIELD)? expr SEMI 	// assignment
 	|	datatype VALIDNAME (ASSIGN expr)? SEMI // variable declaration
 	|	when
 	|	aslong
@@ -79,7 +79,7 @@ main_expr
 	:	(VALIDNAME LBRACKET (expr (COMMA expr)* )? RBRACKET) => VALIDNAME LBRACKET (expr (COMMA expr)* )? RBRACKET
 	|	CONST 
  	| 	VALIDNAME
-  	| 	(LBRACKET expr RBRACKET) => (LBRACKET expr RBRACKET)
+  	| 	(LBRACKET expr RBRACKET)
   	;
 	
 datatype
@@ -92,6 +92,7 @@ yieldtype
 dirname :	VALIDNAME (FSLASH VALIDNAME)* (FSLASH ASTERISK)?
 	;
 
+// Lexer rules
 	
 CONST:	NUMBER+'.'NUMBER+
 	|	NUMBER+('.'(NUMBER)*)?'E'('-'|'+')?NUMBER+ // 2.E+5
@@ -100,7 +101,6 @@ CONST:	NUMBER+'.'NUMBER+
 	|	STRING_LITERAL
 	;
 
-// Lexer rules
 fragment TRUE	:	'true';
 fragment FALSE	:	'false';
 FSLASH 	:	'/';

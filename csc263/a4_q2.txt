@@ -1,0 +1,31 @@
+# 
+# Find film star in matrix. 
+# A[i][j]==1 is "i knows j"
+#
+
+FindFilmStar(A):
+    i=1, j=2
+    u=1, v=1
+
+    while j<=n:
+        # if i knows j, i isn't a star
+        if A[i][j]==1:
+            i=j
+            j=j+1
+        # if i doesn't know j, then j isn't a star
+        else
+            j=j+1
+
+    # a star's colum is all 1s and its row is all 
+    # zeroes except for A[i][i]
+    while A[u][i]==1 and A[i][v]:
+        u=u+1
+        v=v+1
+        # skip asking person about knowing themselves
+        if u==i:  u=u+1
+        if v==i:  v=v+1
+
+    if u==v==A.length
+        return i
+    else
+        return false
