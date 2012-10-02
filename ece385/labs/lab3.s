@@ -5,6 +5,10 @@
 #
 # Format: o - octal, h - hex, d - decimal
 #
+# To test, download: http://www-ug.eecg.utoronto.ca/msl/nios_labs/3/lab3_main.c
+# and add it and this file to a C program project in Altera Monitor.
+#
+
 printn:
 prologue:
     # Create enough space on the stack
