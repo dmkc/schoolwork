@@ -13,7 +13,7 @@ prologue:
     # Save return address on stack
     stw ra, 0(sp)
     # r16 - current vararg
-    addi r16, sp, 4
+    addi r16, sp, 8
     # r17 - memory address of current string char
     mov r17, r4
 
@@ -24,36 +24,37 @@ prologue:
 
 print_loop_start:
     # Load value of current char
-    ldw r18, 0(r17)
+    ldb r18, 0(r17)
+	ldw r20, 0(r16)
 
     # Branch to handlers of specific print formats
-    compeqi, r19, r18, 0x6f
-    bneq r19, r0, br_oct
+    cmpeqi r19, r18, 0x6f
+    bne r19, r0, br_oct
 
-    compeqi, r19, r18, 0x68
-    bneq r19, r0, br_hex
+    cmpeqi r19, r18, 0x68
+    bne r19, r0, br_hex
 
-    compeqi, r19, r18, 0x64
-    bneq r19, r0, br_dec
+    cmpeqi r19, r18, 0x64
+    bne r19, r0, br_dec
 
-    compeqi, r19, r18, 0
-    bneq r19, r0, epilogue
+    cmpeqi r19, r18, 0
+    bne r19, r0, epilogue
 
     # Don't know the character. Quit.
-    br epilogue
+    br print_loop_end
 
 br_oct:
-    mov r4, r18
+    mov r4, r20
     call printOct
     br print_loop_end
 
 br_hex:
-    mov r4, r18
+    mov r4, r20
     call printHex
     br print_loop_end
 
 br_dec:
-    mov r4, r18
+    mov r4, r20
     call printDec
     br print_loop_end
 
@@ -61,7 +62,7 @@ print_loop_end:
     # Advance to next argument to function
     addi r16, r16, 4
     # Advance to the next string char
-    addi r17, r17, 4
+    addi r17, r17, 1
     br print_loop_start
 
 epilogue:
